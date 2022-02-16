@@ -3,18 +3,18 @@
 
 openapi: 3.0.3
 info:
-    title: Greeter API
-    description: The greeting service definition.
+    title: UserInfo API
+    description: The user info service definition.
     version: 0.0.1
 paths:
-    /helloworld/{name}:
+    /users/{id}:
         get:
             tags:
-                - Greeter
-            description: Sends a greeting
-            operationId: Greeter_SayHello
+                - UserInfo
+            description: GetUserInfo
+            operationId: UserInfo_GetUserInfo
             parameters:
-                - name: name
+                - name: id
                   in: path
                   required: true
                   schema:
@@ -30,14 +30,88 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/HelloReply'
+                                $ref: '#/components/schemas/GetUserInfoResponse'
+        put:
+            tags:
+                - UserInfo
+            description: UpdateUserInfo
+            operationId: UserInfo_UpdateUserInfo
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: integer
+                    format: int32
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateUserInfoRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateUserInfoResponse'
 components:
     schemas:
-        HelloReply:
+        GetUserInfoResponse:
             type: object
             properties:
-                message:
+                profileInfo:
+                    $ref: '#/components/schemas/UserProfile'
+                vipInfo:
+                    $ref: '#/components/schemas/UserVip'
+                socialInfo:
+                    $ref: '#/components/schemas/UserSocial'
+        UpdateUserInfoRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int32
+                name:
                     type: string
-            description: The response message containing the greetings
+                email:
+                    type: string
+                fieldMask:
+                    type: string
+                    format: field-mask
+        UpdateUserInfoResponse:
+            type: object
+            properties:
+                profileInfo:
+                    $ref: '#/components/schemas/UserProfile'
+        UserProfile:
+            type: object
+            properties:
+                userId:
+                    type: integer
+                    format: int32
+                name:
+                    type: string
+                email:
+                    type: string
+        UserSocial:
+            type: object
+            properties:
+                following:
+                    type: integer
+                    format: int32
+                follower:
+                    type: integer
+                    format: int32
+        UserVip:
+            type: object
+            properties:
+                level:
+                    type: integer
+                    format: int32
+                exp:
+                    type: integer
+                    format: int32
 tags:
-    - name: Greeter
+    - name: UserInfo

@@ -38,7 +38,8 @@ api:
  	       --go_out=paths=source_relative:. \
  	       --go-http_out=paths=source_relative:. \
  	       --go-grpc_out=paths=source_relative:. \
- 	       --openapi_out==paths=source_relative:. \
+ 	       --openapi_out=paths=source_relative:. \
+ 	       --fieldmask_out=paths=source_relative,lang=go:. \
 	       $(API_PROTO_FILES)
 
 .PHONY: build

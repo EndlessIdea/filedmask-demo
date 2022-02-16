@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package helloworld.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/field_mask.proto";
+import "fieldmask/option.proto";
+
+option go_package = "demo-fieldmask/api/helloworld/v1;v1";
+option java_multiple_files = true;
+option java_package = "dev.kratos.api.helloworld.v1";
+option java_outer_classname = "HelloWorldProtoV1";
+
+// The user info service definition.
+service UserInfo {
+  // GetUserInfo
+  rpc GetUserInfo (GetUserInfoRequest) returns (GetUserInfoResponse)  {
+    option (google.api.http) = {
+      get: "/users/{id}"
+    };
+  }
+  // UpdateUserInfo
+  rpc UpdateUserInfo (UpdateUserInfoRequest) returns (UpdateUserInfoResponse)  {
+    option (google.api.http) = {
+      put: "/users/{id}",
+      body: "*"
+    };
+  }
+}
+
+message GetUserInfoRequest {
+  string id = 1;
+  google.protobuf.FieldMask field_mask = 2 [
+    (fieldmask.option.Option).in = {gen: true},
+    (fieldmask.option.Option).out = {gen: true, message:"GetUserInfoResponse"}
+  ];
+}
+
+message UserProfile {
+  int32 user_id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message UserVip {
+  int32 level = 1;
+  int32 exp = 2;
+}
+
+message UserSocial {
+  int32 following = 1;
+  int32 follower = 2;
+}
+
+message GetUserInfoResponse {
+  UserProfile profile_info = 1;
+  UserVip vip_info = 2;
+  UserSocial social_info = 3;
+}
+
+message UpdateUserInfoRequest {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  google.protobuf.FieldMask field_mask = 4 [
+    (fieldmask.option.Option).in = {gen: true},
+    (fieldmask.option.Option).out = {gen: true, message:"UpdateUserInfoResponse"}
+  ];
+}
+
+message UpdateUserInfoResponse {
+  UserProfile profile_info = 1;
+}
+
+
