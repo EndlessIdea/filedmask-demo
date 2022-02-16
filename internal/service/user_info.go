@@ -92,32 +92,39 @@ func (s *UserInfoService) UpdateUserInfo(ctx context.Context, request *pb.Update
 	fmt.Printf("UpdateUserInfo is called: %s\n", request.String())
 	fm := request.FieldMask_Filter()
 
-	profile := &pb.UserProfile{
-		UserId: 9999,
+	profile := &UserProfile{
+		UserID: 9999,
 		Name:   "lining.guan",
 		Email:  "lining.guan@grabtaxi.com",
 	}
 
-	profileUpdateMap := map[string]interface{}{}
 	if fm.MaskedIn_Name() {
-		profileUpdateMap["name"] = request.Name
 		profile.Name = request.Name
 	}
 	if fm.MaskedIn_Email() {
-		profileUpdateMap["email"] = request.Email
 		profile.Email = request.Email
 	}
 
-	_ = s.userProfileRepo.UpdateUserProfile(ctx, request.Id, profileUpdateMap)
-	fmt.Printf("update user profile by %+v success\n", profileUpdateMap)
+	_ = s.userProfileRepo.UpdateUserProfile(ctx, profile)
+	fmt.Printf("update user profile %+v success\n", profile)
 
 	return &pb.UpdateUserInfoResponse{
-		ProfileInfo: profile,
+		ProfileInfo: &pb.UserProfile{
+			UserId: profile.UserID,
+			Name:   profile.Name,
+			Email:  profile.Email,
+		},
 	}, nil
+}
+
+type UserProfile struct {
+	UserID int32
+	Name   string
+	Email  string
 }
 
 type UserProfileRepository struct{}
 
-func (u *UserProfileRepository) UpdateUserProfile(ctx context.Context, id int32, updateMap map[string]interface{}) error {
+func (u *UserProfileRepository) UpdateUserProfile(ctx context.Context, profile *UserProfile) error {
 	return nil
 }
